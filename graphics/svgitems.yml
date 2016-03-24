@@ -1,0 +1,11 @@
+svg_path: /home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg
+item_names:
+  - controlvalve
+  - expander
+  - splitter
+  - heatexchanger1
+  - heatexchanger2
+  - compressor
+  - hydroturbine
+  - batchdistillationcolumn
+  - fractionaldistillationcolumn

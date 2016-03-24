@@ -11,7 +11,7 @@ import yaml
 
 import diagramscene_rc
 
-from srutils.PySideUtils.graphics.svg import SvgItem
+from graphics.svg import SvgItem
 
 class Arrow(QtGui.QGraphicsLineItem):
     def __init__(self, startItem, endItem, parent=None, scene=None):
@@ -165,7 +165,6 @@ class DiagramItem(SvgItem):
 
     def image(self):
         renderer = self.renderer# QtSvg.QSvgRenderer renderer(svg_file_name);
-        print renderer
         #renderer = QtSvg.QSvgRenderer("/home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg")
         # Prepare a QImage with desired characteritisc
         image = QtGui.QImage(250, 250, QtGui.QImage.Format_ARGB32)
@@ -345,7 +344,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.createActions()
         self.createMenus()
-        yaml_filepath = "/home/noitapicname/pycharmprojects/srutils/PySideUtils/graphics/svgitems.yml"
+        yaml_filepath = "graphics/svgitems.yml"
         diaitems_yaml = yaml.load(open(yaml_filepath, 'rU'))
         self.createToolBox(diaitems_yaml['item_names'])
 
@@ -800,7 +799,7 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
 
-    svg_filepath = "/home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg"
+    svg_filepath = "PFD symbols.svg"
     mainWindow = MainWindow(svg_filepath)
     mainWindow.setGeometry(100, 100, 800, 500)
     mainWindow.show()
