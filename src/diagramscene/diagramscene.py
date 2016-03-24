@@ -5,11 +5,12 @@
 #sip.setapi('QString', 2)
 
 import math
-
+import sys
 from PySide import QtCore, QtGui, QtSvg
 import yaml
 
 import diagramscene_rc
+sys.path.append('..')
 
 from graphics.svg import SvgItem
 
@@ -344,7 +345,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.createActions()
         self.createMenus()
-        yaml_filepath = "graphics/svgitems.yml"
+        yaml_filepath = "./../graphics/svgitems.yml"
         diaitems_yaml = yaml.load(open(yaml_filepath, 'rU'))
         self.createToolBox(diaitems_yaml['item_names'])
 
@@ -799,7 +800,7 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
 
-    svg_filepath = "PFD symbols.svg"
+    svg_filepath = "./../../PFD symbols.svg"
     mainWindow = MainWindow(svg_filepath)
     mainWindow.setGeometry(100, 100, 800, 500)
     mainWindow.show()
