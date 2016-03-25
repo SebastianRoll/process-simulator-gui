@@ -154,13 +154,19 @@ class DiagramItem(SvgItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
 
-    def connection_pos(self, con):
+    def connection_pos(self, con, relpos=False):
+        """
+        Find connection point coordinates, absolute and relative (from center)
+        :param con:
+        :param relpos:
+        :return:
+        """
         dia_rect = self.sceneBoundingRect()
-        relx = (con['x']-50) /100. * dia_rect.width()
-        rely = (con['y']-50) /100. * dia_rect.height()
+        relx = con['x']/100. * dia_rect.width()
+        rely = con['y']/100. * dia_rect.height()
         conn_relpos = QtCore.QPointF(relx, rely)
-        conn_pos = dia_rect.center() + conn_relpos
-        return conn_pos
+        conn_pos = self.scenePos() + conn_relpos
+        return conn_relpos if relpos else conn_pos
 
     def removeArrow(self, arrow):
         try:
