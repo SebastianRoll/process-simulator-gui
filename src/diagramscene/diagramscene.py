@@ -207,7 +207,7 @@ class DiagramItem(SvgItem):
         painter = QtGui.QPainter(image)
         renderer.render(painter, self.unit_name)
         painter.end()
-        pixmap = QtGui.QPixmap(250, 250)
+        pixmap = QtGui.QPixmap()
         pixmap.convertFromImage(image)
 
         return pixmap
