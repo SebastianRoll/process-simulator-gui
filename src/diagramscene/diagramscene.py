@@ -205,20 +205,11 @@ class DiagramItem(SvgItem):
         image = QtGui.QImage(bbox.width(), bbox.height(), QtGui.QImage.Format_ARGB32)
         image.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(image)
+        painter.setRenderHints(QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing | QtGui.QPainter.SmoothPixmapTransform)
         renderer.render(painter, self.unit_name)
         painter.end()
         pixmap = QtGui.QPixmap()
         pixmap.convertFromImage(image)
-
-        return pixmap
-
-
-        pixmap = QtGui.QPixmap(250, 250)
-        pixmap.fill(QtCore.Qt.transparent)
-        painter = QtGui.QPainter(pixmap)
-        painter.setPen(QtGui.QPen(QtCore.Qt.black, 8))
-        painter.translate(125, 125)
-        painter.drawPolyline(self.myPolygon)
         return pixmap
 
     def contextMenuEvent(self, event):
@@ -457,6 +448,8 @@ class MainWindow(QtGui.QMainWindow):
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.toolBox)
         self.view = QtGui.QGraphicsView(self.scene)
+        self.view.setRenderHints(QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing | QtGui.QPainter.SmoothPixmapTransform)
+
         layout.addWidget(self.view)
 
         self.widget = QtGui.QWidget()
