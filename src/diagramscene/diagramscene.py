@@ -15,13 +15,16 @@ sys.path.append('..')
 from graphics.svg import SvgItem
 
 class Arrow(QtGui.QGraphicsLineItem):
-    def __init__(self, startItem, endItem, parent=None, scene=None):
+    def __init__(self, startItem, endItem, startconn=None, endconn=None, parent=None, scene=None):
         super(Arrow, self).__init__(parent, scene)
 
         self.arrowHead = QtGui.QPolygonF()
+        self.arrow_size = 10.
 
         self.myStartItem = startItem
+        self.start_connector = startconn #if startconn is None else self.myStartItem
         self.myEndItem = endItem
+        self.end_connector = endconn #if endconn is None else self.myEndItem.
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
         self.myColor = QtCore.Qt.black
         self.setPen(QtGui.QPen(self.myColor, 2, QtCore.Qt.SolidLine,
@@ -60,12 +63,12 @@ class Arrow(QtGui.QGraphicsLineItem):
         myColor = self.myColor
         myPen = self.pen()
         myPen.setColor(self.myColor)
-        arrowSize = 20.0
+        arrowSize = self.arrow_size
         painter.setPen(myPen)
         painter.setBrush(self.myColor)
 
-        centerLine = QtCore.QLineF(myStartItem.pos(), myEndItem.pos())
-        '''endPolygon = myEndItem.polygon()
+        '''centerLine = QtCore.QLineF(myStartItem.pos(), myEndItem.pos())
+        endPolygon = myEndItem.polygon()
         p1 = endPolygon.at(0) + myEndItem.pos()
 
         intersectPoint = QtCore.QPointF()
@@ -77,7 +80,7 @@ class Arrow(QtGui.QGraphicsLineItem):
                 break
             p1 = p2'''
 
-        self.setLine(QtCore.QLineF(self.myEndItem.connector_out(), myStartItem.connector_in()))
+        self.setLine(QtCore.QLineF(myEndItem.connection_pos(self.end_connector), myStartItem.connection_pos(self.start_connector)))
         line = self.line()
 
         angle = math.acos(line.dx() / line.length())
@@ -139,22 +142,25 @@ class DiagramItem(SvgItem):
         super(DiagramItem, self).__init__(self.svg_filepath, parent)
 
         self.arrows = []
-        self.connectors = {}
-        self.connectors['in'] = []
-        self.connectors['out'] = []
 
         self.diagramType = diagramType
         self.myContextMenu = contextMenu
 
-        item_name = self.diagram_items[self.diagramType]
-        self.setElementId(item_name['name'])
+        unit_cat = self.diagram_items[self.diagramType]
+        self.setElementId(unit_cat['name'])
 
-        if self.diagram_items[diagramType] == "pump":
-            pass
-            #self.connectors['in'].append(conin)
+        self.connectors = unit_cat['connections']
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+
+    def connection_pos(self, con):
+        dia_rect = self.sceneBoundingRect()
+        relx = (con['x']-50) /100. * dia_rect.width()
+        rely = (con['y']-50) /100. * dia_rect.height()
+        conn_relpos = QtCore.QPointF(relx, rely)
+        conn_pos = dia_rect.center() + conn_relpos
+        return conn_pos
 
     def removeArrow(self, arrow):
         try:
@@ -207,20 +213,18 @@ class DiagramItem(SvgItem):
                 arrow.updatePosition()
         return value
 
-    def connector_in(self):
-        if len(self.connectors['in']):
-            print "found connector in"
-            connectorpos = self.connectors['in'][0].pos()
-        else:
-            connectorpos = self.pos()
-        return connectorpos
+    def closest_connector(self, type, curspos):
+        connectors = self.connectors[type]
+        assert len(connectors) > 0
+        connectors_pos = [self.connection_pos(conn) for conn in connectors]
+        distance_cursor_connectors = [QtCore.QLineF(conn_pos, curspos).length() for conn_pos in connectors_pos]
+        closest_dist = 9999999
+        for connector, distance in zip(connectors, distance_cursor_connectors):
+            if distance < closest_dist:
+                closest_conn = connector
+                closest_dist = distance
 
-    def connector_out(self):
-        if len(self.connectors['out']):
-            pass
-        else:
-            connectorpos = self.pos()
-        return connectorpos
+        return closest_conn
 
 
 class DiagramScene(QtGui.QGraphicsScene):
@@ -324,10 +328,12 @@ class DiagramScene(QtGui.QGraphicsScene):
 
     def mouseReleaseEvent(self, mouseEvent):
         if self.line and self.myMode == self.InsertLine:
-            startItems = self.items(self.line.line().p1())
+            line_startpoint = self.line.line().p1()
+            line_endpoint = self.line.line().p2()
+            startItems = self.items(line_startpoint)
             if len(startItems) and startItems[0] == self.line:
                 startItems.pop(0)
-            endItems = self.items(self.line.line().p2())
+            endItems = self.items(line_endpoint)
             if len(endItems) and endItems[0] == self.line:
                 endItems.pop(0)
 
@@ -340,7 +346,10 @@ class DiagramScene(QtGui.QGraphicsScene):
                     startItems[0] != endItems[0]:
                 startItem = startItems[0]
                 endItem = endItems[0]
-                arrow = Arrow(startItem, endItem)
+
+                conn_start = startItem.closest_connector("out", line_startpoint)
+                conn_end = endItem.closest_connector("in", line_endpoint)
+                arrow = Arrow(startItem, endItem, conn_start, conn_end)
                 arrow.setColor(self.myLineColor)
                 startItem.addArrow(arrow)
                 endItem.addArrow(arrow)
@@ -825,7 +834,7 @@ if __name__ == '__main__':
 
     svg_filepath = "./../../PFD symbols.svg"
     mainWindow = MainWindow(svg_filepath)
-    mainWindow.setGeometry(100, 100, 800, 500)
+    mainWindow.setGeometry(100, 100, 900, 600)
     mainWindow.show()
 
     sys.exit(app.exec_())
