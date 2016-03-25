@@ -145,12 +145,13 @@ class DiagramItem(SvgItem):
         return self.diagram_items[self.diagramType]['name']
 
     def __init__(self, diagramType, contextMenu, parent=None, scene=None):
-        super(DiagramItem, self).__init__(self.svg_filepath, parent)
+        super(DiagramItem, self).__init__(parent=parent)
 
         self.arrows = []
 
         self.diagramType = diagramType
         self.myContextMenu = contextMenu
+
 
         unit_cat = self.diagram_items[self.diagramType]
         self.setElementId(unit_cat['name'])
@@ -193,19 +194,20 @@ class DiagramItem(SvgItem):
         self.arrows.append(arrow)
 
     def image(self):
-        renderer = self.renderer# QtSvg.QSvgRenderer renderer(svg_file_name);
-        #renderer = QtSvg.QSvgRenderer("/home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg")
+        """
+        Paint the rendered part of the svg file to a pixmap.
+        :return: Pixmap, used as button icon
+        """
+        renderer = self.renderer()
         # Prepare a QImage with desired characteritisc
         image = QtGui.QImage(250, 250, QtGui.QImage.Format_ARGB32)
-        #image.fill(0xaaA08080) # partly transparent red-ish background
         image.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(image)
-        renderer().render(painter)
-        #self.renderer().render(painter)#, painter.rect());
-        pixmap = QtGui.QPixmap(250, 250)
-        #pixmap = QtGui.QPixmap(self.svg_filepath)
-        pixmap.convertFromImage(image)
+        renderer.render(painter, self.unit_name)
         painter.end()
+        pixmap = QtGui.QPixmap(250, 250)
+        pixmap.convertFromImage(image)
+
         return pixmap
 
 
@@ -288,6 +290,7 @@ class DiagramScene(QtGui.QGraphicsScene):
         self.myLineColor = QtCore.Qt.black
         self.myFont = QtGui.QFont()
 
+
     def setLineColor(self, color):
         self.myLineColor = color
         if self.isItemChange(Arrow):
@@ -341,6 +344,9 @@ class DiagramScene(QtGui.QGraphicsScene):
 
         if self.myMode == self.InsertItem:
             item = DiagramItem(self.myItemType, self.myItemMenu)
+            item.setSharedRenderer(self.parent().renderer)
+            item.setElementId(item.unit_name)
+
             #item.setBrush(self.myItemColor)
             self.addItem(item)
             item.setPos(mouseEvent.scenePos())
@@ -420,17 +426,21 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self, svg_filepath):
         super(MainWindow, self).__init__()
 
+
+        self.renderer = QtSvg.QSvgRenderer(svg_filepath)
+
         self.createActions()
         self.createMenus()
         yaml_filepath = "./../graphics/svgitems.yml"
         diaitems_yaml = yaml.load(open(yaml_filepath, 'rU'))
         self.createToolBox(diaitems_yaml['item_names'])
 
-        self.scene = DiagramScene(self.itemMenu, svg_filepath)
+        self.scene = DiagramScene(self.itemMenu, svg_filepath, parent=self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 5000, 5000))
         self.scene.itemInserted.connect(self.itemInserted)
         self.scene.textInserted.connect(self.textInserted)
         self.scene.itemSelected.connect(self.itemSelected)
+
 
 
         '''#renderer = QtSvg.QSvgRenderer('/home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg')
@@ -819,6 +829,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def createCellWidget(self, text, diagramType):
         item = DiagramItem(diagramType, self.itemMenu)
+        item.setSharedRenderer(self.renderer)
+        item.setElementId(item.unit_name)
         icon = QtGui.QIcon(item.image())
 
         button = QtGui.QToolButton()
