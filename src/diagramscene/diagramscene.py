@@ -77,7 +77,7 @@ class Arrow(QtGui.QGraphicsLineItem):
                 break
             p1 = p2'''
 
-        self.setLine(QtCore.QLineF(self.myEndItem.pos(), myStartItem.pos()))
+        self.setLine(QtCore.QLineF(self.myEndItem.connector_out(), myStartItem.connector_in()))
         line = self.line()
 
         angle = math.acos(line.dx() / line.length())
@@ -139,12 +139,19 @@ class DiagramItem(SvgItem):
         super(DiagramItem, self).__init__(self.svg_filepath, parent)
 
         self.arrows = []
+        self.connectors = {}
+        self.connectors['in'] = []
+        self.connectors['out'] = []
 
         self.diagramType = diagramType
         self.myContextMenu = contextMenu
 
         item_name = self.diagram_items[self.diagramType]
-        self.setElementId(item_name)
+        self.setElementId(item_name['name'])
+
+        if self.diagram_items[diagramType] == "pump":
+            pass
+            #self.connectors['in'].append(conin)
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
@@ -198,8 +205,22 @@ class DiagramItem(SvgItem):
         if change == QtGui.QGraphicsItem.ItemPositionChange:
             for arrow in self.arrows:
                 arrow.updatePosition()
-
         return value
+
+    def connector_in(self):
+        if len(self.connectors['in']):
+            print "found connector in"
+            connectorpos = self.connectors['in'][0].pos()
+        else:
+            connectorpos = self.pos()
+        return connectorpos
+
+    def connector_out(self):
+        if len(self.connectors['out']):
+            pass
+        else:
+            connectorpos = self.pos()
+        return connectorpos
 
 
 class DiagramScene(QtGui.QGraphicsScene):
@@ -548,9 +569,11 @@ class MainWindow(QtGui.QMainWindow):
 
 
         # add svg names as DiagramItem atttributes
-        for idx_, name in enumerate(diagram_items):
+        for idx_, unit in enumerate(diagram_items):
+            # add 1 to index since text button occupies 0.
             idx = idx_ + 1
-            DiagramItem.diagram_items[idx] = name
+            name = unit['name']
+            DiagramItem.diagram_items[idx] = unit
             layout.addWidget(self.createCellWidget(name, idx),
                     idx/2, idx%2)
 

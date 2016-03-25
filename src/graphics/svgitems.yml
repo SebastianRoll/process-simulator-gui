@@ -1,11 +1,102 @@
 svg_path: /home/noitapicname/pycharmprojects/processsimulator_gui/PFD symbols.svg
 item_names:
-  - controlvalve
-  - expander
-  - splitter
-  - heatexchanger1
-  - heatexchanger2
-  - compressor
-  - hydroturbine
-  - batchdistillationcolumn
-  - fractionaldistillationcolumn
+  - name: controlvalve
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 50
+    - out:
+      singleflow: true
+      x: 100
+      y: 50
+  - name: pump
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 50
+    - out:
+      singleflow: true
+      x: 100
+      y: 50
+  - name: expander
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
+  - name: splitter
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 50
+    - out:
+      singleflow: true
+      x: 100
+      y: 50
+  - name: heatexchanger1
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
+  - name: heatexchanger2
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
+  - name: compressor
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
+  - name: hydroturbine
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 50
+    - out:
+      singleflow: true
+      x: 100
+      y: 50
+  - name: batchdistillationcolumn
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
+  - name: fractionaldistillationcolumn
+    connections:
+    - in: #in/out/inout
+      singleflow: true
+      x: 0
+      y: 100
+    - out:
+      singleflow: true
+      x: 100
+      y: 100
