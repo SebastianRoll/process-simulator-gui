@@ -623,7 +623,7 @@ class MainWindow(QtGui.QMainWindow):
         self.buttonGroup.addButton(textButton, self.InsertTextButton)
         textButton.setIcon(QtGui.QIcon(QtGui.QPixmap(':/images/textpointer.png')
                             .scaled(30, 30)))
-        textButton.setIconSize(QtCore.QSize(50, 50))
+        textButton.setIconSize(QtCore.QSize(75, 75))
 
         textLayout = QtGui.QGridLayout()
         textLayout.addWidget(textButton, 0, 0, QtCore.Qt.AlignHCenter)
@@ -635,7 +635,6 @@ class MainWindow(QtGui.QMainWindow):
         layout.addWidget(textWidget, 0, 0)
 
 
-
         # add svg names as DiagramItem atttributes
         for idx_, unit in enumerate(diagram_items):
             # add 1 to index since text button occupies 0.
@@ -644,9 +643,6 @@ class MainWindow(QtGui.QMainWindow):
             DiagramItem.diagram_items[idx] = unit
             layout.addWidget(self.createCellWidget(name, idx),
                     idx/2, idx%2)
-
-
-
 
 
         layout.setRowStretch(3, 10)
@@ -816,7 +812,7 @@ class MainWindow(QtGui.QMainWindow):
         button = QtGui.QToolButton()
         button.setText(text)
         button.setIcon(QtGui.QIcon(image))
-        button.setIconSize(QtCore.QSize(50, 50))
+        button.setIconSize(QtCore.QSize(75, 75))
         button.setCheckable(True)
         self.backgroundButtonGroup.addButton(button)
 
@@ -837,7 +833,7 @@ class MainWindow(QtGui.QMainWindow):
 
         button = QtGui.QToolButton()
         button.setIcon(icon)
-        button.setIconSize(QtCore.QSize(50, 50))
+        button.setIconSize(QtCore.QSize(75, 75))
         button.setCheckable(True)
         self.buttonGroup.addButton(button, diagramType)
 
