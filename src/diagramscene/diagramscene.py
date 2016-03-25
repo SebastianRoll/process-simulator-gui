@@ -140,6 +140,10 @@ class DiagramItem(SvgItem):
     connection_dotsize = 5
     svg_filepath = None
 
+    @property
+    def unit_name(self):
+        return self.diagram_items[self.diagramType]['name']
+
     def __init__(self, diagramType, contextMenu, parent=None, scene=None):
         super(DiagramItem, self).__init__(self.svg_filepath, parent)
 
