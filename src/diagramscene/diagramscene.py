@@ -199,8 +199,10 @@ class DiagramItem(SvgItem):
         :return: Pixmap, used as button icon
         """
         renderer = self.renderer()
-        # Prepare a QImage with desired characteritisc
-        image = QtGui.QImage(250, 250, QtGui.QImage.Format_ARGB32)
+        # bounding box gives unit image width and height
+        bbox = renderer.boundsOnElement(self.unit_name)
+        # Prepare a QImage with desired characteritisc, using unit bounding box.
+        image = QtGui.QImage(bbox.width(), bbox.height(), QtGui.QImage.Format_ARGB32)
         image.fill(QtCore.Qt.transparent)
         painter = QtGui.QPainter(image)
         renderer.render(painter, self.unit_name)
