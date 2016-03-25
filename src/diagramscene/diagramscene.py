@@ -136,6 +136,8 @@ class DiagramTextItem(QtGui.QGraphicsTextItem):
 class DiagramItem(SvgItem):
     diagram_items = {}
     #controlvalve, expander = range(2)
+    connection_colors = {'in':QtCore.Qt.red, 'out':QtCore.Qt.blue}
+    connection_dotsize = 5
     svg_filepath = None
 
     def __init__(self, diagramType, contextMenu, parent=None, scene=None):
@@ -150,6 +152,9 @@ class DiagramItem(SvgItem):
         self.setElementId(unit_cat['name'])
 
         self.connectors = unit_cat['connections']
+
+        # list of connectors to be painted
+        self._paint_connectors = []
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
@@ -232,6 +237,29 @@ class DiagramItem(SvgItem):
 
         return closest_conn
 
+    def paint(self, painter, option, widget=None):
+        super(DiagramItem, self).paint(painter, option, widget)
+        # draw connectors
+        #painter.setPen(QtGui.QColor(168, 34, 3))
+        for type, connectors_in_type in self.connectors.items():
+            if self._paint_connectors != "all" and type != self._paint_connectors:
+                continue
+            for connector in connectors_in_type:
+                painter.setBrush(self.connection_colors[type])
+                connector_point = self.connection_pos(connector, relpos=True)
+                painter.drawEllipse(connector_point, self.connection_dotsize, self.connection_dotsize)
+
+    def paint_connectors(self, type):
+        self._paint_connectors = type.lower()
+        '''
+        if type == "all":
+            self._paint_connectors = self.connectors.values()
+        elif type == "None":
+            self._paint_connectors = {}
+        else:
+            self._paint_connectors = {type: self.connectors[type]}'''
+        self.update()
+
 
 class DiagramScene(QtGui.QGraphicsScene):
     InsertItem, InsertLine, InsertText, MoveItem  = range(4)
@@ -283,6 +311,13 @@ class DiagramScene(QtGui.QGraphicsScene):
 
     def setMode(self, mode):
         self.myMode = mode
+        if mode == self.InsertLine:
+            # highlight connection points
+            # todo - set paint_connectors attribute one place instead of setting for all existing DiagramItems
+            [item.paint_connectors("all") for item in self.items() if isinstance(item, DiagramItem)]
+        else:
+            [item.paint_connectors("None") for item in self.items() if isinstance(item, DiagramItem)]
+
 
     def setItemType(self, type):
         self.myItemType = type
@@ -311,6 +346,8 @@ class DiagramScene(QtGui.QGraphicsScene):
                                         mouseEvent.scenePos()))
             self.line.setPen(QtGui.QPen(self.myLineColor, 2))
             self.addItem(self.line)
+
+
         elif self.myMode == self.InsertText:
             textItem = DiagramTextItem()
             textItem.setFont(self.myFont)

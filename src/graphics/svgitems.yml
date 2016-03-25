@@ -25,11 +25,11 @@ item_names:
       in: #in/out/inout
         - singleflow: true
           x: 0
-          y: 100
+          y: 0
       out:
         - singleflow: true
           x: 100
-          y: 100
+          y: 0
   - name: splitter
     connections:
       in: #in/out/inout
@@ -45,31 +45,37 @@ item_names:
       in: #in/out/inout
         - singleflow: true
           x: 0
-          y: 100
+          y: 50
       out:
         - singleflow: true
           x: 100
-          y: 100
+          y: 50
   - name: heatexchanger2
     connections:
       in: #in/out/inout
         - singleflow: true
           x: 0
-          y: 100
+          y: 50
+        - singleflow: true
+          x: 50
+          y: 0
       out:
         - singleflow: true
           x: 100
+          y: 50
+        - singleflow: true
+          x: 50
           y: 100
   - name: compressor
     connections:
       in: #in/out/inout
         - singleflow: true
           x: 0
-          y: 100
+          y: 0
       out:
         - singleflow: true
           x: 100
-          y: 100
+          y: 0
   - name: hydroturbine
     connections:
       in: #in/out/inout
@@ -95,8 +101,11 @@ item_names:
       in: #in/out/inout
         - singleflow: true
           x: 0
-          y: 100
+          y: 50
       out:
         - singleflow: true
           x: 100
-          y: 100
+          y: 25
+        - singleflow: true
+          x: 100
+          y: 95
