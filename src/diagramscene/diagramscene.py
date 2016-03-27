@@ -666,7 +666,7 @@ class MainWindow(QtGui.QMainWindow):
         self.toolBox = QtGui.QToolBox()
         self.toolBox.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Ignored))
         self.toolBox.setMinimumWidth(itemWidget.sizeHint().width())
-        self.toolBox.addItem(itemWidget, "Basic Flowchart Shapes")
+        self.toolBox.addItem(itemWidget, "Process Units")
         self.toolBox.addItem(backgroundWidget, "Backgrounds")
 
     def createActions(self):
