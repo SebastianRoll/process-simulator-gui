@@ -3,7 +3,7 @@
 # This is only needed for Python v2 but is harmless for Python v3.
 #import sip
 #sip.setapi('QString', 2)
-
+import os
 import math
 import sys
 from PySide import QtCore, QtGui, QtSvg
@@ -463,13 +463,13 @@ class MainWindow(QtGui.QMainWindow):
 
         text = button.text()
         if text == "Blue Grid":
-            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(':/images/background1.png')))
+            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(os.path.join('images', 'background1.png'))))
         elif text == "White Grid":
-            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(':/images/background2.png')))
+            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(os.path.join('images', 'background2.png'))))
         elif text == "Gray Grid":
-            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(':/images/background3.png')))
+            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(os.path.join('images', 'background3.png'))))
         else:
-            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(':/images/background4.png')))
+            self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QPixmap(os.path.join('images', 'background4.png'))))
 
         self.scene.update()
         self.view.update()
@@ -546,21 +546,21 @@ class MainWindow(QtGui.QMainWindow):
     def textColorChanged(self):
         self.textAction = self.sender()
         self.fontColorToolButton.setIcon(self.createColorToolButtonIcon(
-                    ':/images/textpointer.png',
+                    os.path.join('images', 'textpointer.png'),
                     QtGui.QColor(self.textAction.data())))
         self.textButtonTriggered()
 
     def itemColorChanged(self):
         self.fillAction = self.sender()
         self.fillColorToolButton.setIcon(self.createColorToolButtonIcon(
-                    ':/images/floodfill.png',
+                    os.path.join('images', 'floodfill.png'),
                     QtGui.QColor(self.fillAction.data())))
         self.fillButtonTriggered()
 
     def lineColorChanged(self):
         self.lineAction = self.sender()
         self.lineColorToolButton.setIcon(self.createColorToolButtonIcon(
-                    ':/images/linecolor.png',
+                    os.path.join('images', 'linecolor.png'),
                     QtGui.QColor(self.lineAction.data())))
         self.lineButtonTriggered()
 
@@ -611,7 +611,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.InsertTextButton = 0
         self.buttonGroup.addButton(textButton, self.InsertTextButton)
-        textButton.setIcon(QtGui.QIcon(QtGui.QPixmap(':/images/textpointer.png')
+        textButton.setIcon(QtGui.QIcon(QtGui.QPixmap(os.path.join('images', 'textpointer.png'))
                             .scaled(30, 30)))
         textButton.setIconSize(QtCore.QSize(75, 75))
 
@@ -646,13 +646,13 @@ class MainWindow(QtGui.QMainWindow):
 
         backgroundLayout = QtGui.QGridLayout()
         backgroundLayout.addWidget(self.createBackgroundCellWidget("Blue Grid",
-                ':/images/background1.png'), 0, 0)
+                os.path.join('images', 'background1.png')), 0, 0)
         backgroundLayout.addWidget(self.createBackgroundCellWidget("White Grid",
-                ':/images/background2.png'), 0, 1)
+                os.path.join('images', 'background2.png')), 0, 1)
         backgroundLayout.addWidget(self.createBackgroundCellWidget("Gray Grid",
-                ':/images/background3.png'), 1, 0)
+                os.path.join('images', 'background3.png')), 1, 0)
         backgroundLayout.addWidget(self.createBackgroundCellWidget("No Grid",
-                ':/images/background4.png'), 1, 1)
+                os.path.join('images', 'background4.png')), 1, 1)
 
         backgroundLayout.setRowStretch(2, 10)
         backgroundLayout.setColumnStretch(2, 10)
@@ -668,16 +668,16 @@ class MainWindow(QtGui.QMainWindow):
 
     def createActions(self):
         self.toFrontAction = QtGui.QAction(
-                QtGui.QIcon(':/images/bringtofront.png'), "Bring to &Front",
+                QtGui.QIcon(os.path.join('images', 'bringtofront.png')), "Bring to &Front",
                 self, shortcut="Ctrl+F", statusTip="Bring item to front",
                 triggered=self.bringToFront)
 
         self.sendBackAction = QtGui.QAction(
-                QtGui.QIcon(':/images/sendtoback.png'), "Send to &Back", self,
+                QtGui.QIcon(os.path.join('images', 'sendtoback.png')), "Send to &Back", self,
                 shortcut="Ctrl+B", statusTip="Send item to back",
                 triggered=self.sendToBack)
 
-        self.deleteAction = QtGui.QAction(QtGui.QIcon(':/images/delete.png'),
+        self.deleteAction = QtGui.QAction(QtGui.QIcon(os.path.join('images', 'delete.png')),
                 "&Delete", self, shortcut="Delete",
                 statusTip="Delete item from diagram",
                 triggered=self.deleteItem)
@@ -685,16 +685,16 @@ class MainWindow(QtGui.QMainWindow):
         self.exitAction = QtGui.QAction("E&xit", self, shortcut="Ctrl+X",
                 statusTip="Quit Scenediagram example", triggered=self.close)
 
-        self.boldAction = QtGui.QAction(QtGui.QIcon(':/images/bold.png'),
+        self.boldAction = QtGui.QAction(QtGui.QIcon(os.path.join('images', 'bold.png')),
                 "Bold", self, checkable=True, shortcut="Ctrl+B",
                 triggered=self.handleFontChange)
 
-        self.italicAction = QtGui.QAction(QtGui.QIcon(':/images/italic.png'),
+        self.italicAction = QtGui.QAction(QtGui.QIcon(os.path.join('images', 'italic.png')),
                 "Italic", self, checkable=True, shortcut="Ctrl+I",
                 triggered=self.handleFontChange)
 
         self.underlineAction = QtGui.QAction(
-                QtGui.QIcon(':/images/underline.png'), "Underline", self,
+                QtGui.QIcon(os.path.join('images', 'underline.png')), "Underline", self,
                 checkable=True, shortcut="Ctrl+U",
                 triggered=self.handleFontChange)
 
@@ -737,7 +737,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.createColorMenu(self.textColorChanged, QtCore.Qt.black))
         self.textAction = self.fontColorToolButton.menu().defaultAction()
         self.fontColorToolButton.setIcon(
-                self.createColorToolButtonIcon(':/images/textpointer.png',
+                self.createColorToolButtonIcon(os.path.join('images', 'textpointer.png'),
                         QtCore.Qt.black))
         self.fontColorToolButton.setAutoFillBackground(True)
         self.fontColorToolButton.clicked.connect(self.textButtonTriggered)
@@ -748,7 +748,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.createColorMenu(self.itemColorChanged, QtCore.Qt.white))
         self.fillAction = self.fillColorToolButton.menu().defaultAction()
         self.fillColorToolButton.setIcon(
-                self.createColorToolButtonIcon(':/images/floodfill.png',
+                self.createColorToolButtonIcon(os.path.join('images', 'floodfill.png'),
                         QtCore.Qt.white))
         self.fillColorToolButton.clicked.connect(self.fillButtonTriggered)
 
@@ -758,7 +758,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.createColorMenu(self.lineColorChanged, QtCore.Qt.black))
         self.lineAction = self.lineColorToolButton.menu().defaultAction()
         self.lineColorToolButton.setIcon(
-                self.createColorToolButtonIcon(':/images/linecolor.png',
+                self.createColorToolButtonIcon(os.path.join('images', 'linecolor.png'),
                         QtCore.Qt.black))
         self.lineColorToolButton.clicked.connect(self.lineButtonTriggered)
 
@@ -777,10 +777,10 @@ class MainWindow(QtGui.QMainWindow):
         pointerButton = QtGui.QToolButton()
         pointerButton.setCheckable(True)
         pointerButton.setChecked(True)
-        pointerButton.setIcon(QtGui.QIcon(':/images/pointer.png'))
+        pointerButton.setIcon(QtGui.QIcon(os.path.join('images', 'pointer.png')))
         linePointerButton = QtGui.QToolButton()
         linePointerButton.setCheckable(True)
-        linePointerButton.setIcon(QtGui.QIcon(':/images/linepointer.png'))
+        linePointerButton.setIcon(QtGui.QIcon(os.path.join('images', 'linepointer.png')))
 
         self.pointerTypeGroup = QtGui.QButtonGroup()
         self.pointerTypeGroup.addButton(pointerButton, DiagramScene.MoveItem)
