@@ -9,10 +9,7 @@ import sys
 from PySide import QtCore, QtGui, QtSvg
 import yaml
 
-import diagramscene_rc
-sys.path.append('..')
-
-from graphics.svg import SvgItem
+from pysideutils.graphics import SvgItem
 
 class Arrow(QtGui.QGraphicsLineItem):
     def __init__(self, startItem, endItem, startconn=None, endconn=None, parent=None, scene=None):
@@ -424,7 +421,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.createActions()
         self.createMenus()
-        yaml_filepath = "./../graphics/svgitems.yml"
+        yaml_filepath = "./../../svgitems.yml"
         diaitems_yaml = yaml.load(open(yaml_filepath, 'rU'))
         self.createToolBox(diaitems_yaml['item_names'])
 
